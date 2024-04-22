@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+    <head th:replace="~{layout/plantilla :: head}">
+        <title>Fidegames</title>        
+    </head>
+    <body>
+        <header th:replace="~{layout/plantilla :: header}"/>
+        <section>
+            <div>
+                <div class="content-container">
+                    <h1 class="bg-warning">[[#{frag.tuto}]]</h1>
+                </div>
+                </div>
+            <div class="h-100 d-flex align-items-center justify-content-center">
+                         <div class="card mb-3" style="max-width: 1080px; " >
+                        
+                            <div class="row g-0">
+                          <div class="col-md-4">
+                              <img th:src="'/images/games/1'" class="img-fluid rounded-start" alt="..."></img>
+                          </div>
+                          <div class="col-md-8">
+                            <div class="card-body">
+                              <h2 class="card-title" style='color: black'>Vidas Infinitas Super Mario World</h2>
+                              <p class="card-text" style='color: black'>
+                                1. Primero deberás ingresar al nivel llamado ‘Donut Ghost House’,más popularmente conocido como la primera casa fantasma.
+                                <br></br>2. Antes de entrar asegúrate de que Mario o Luigi tenga la capa. De lo contrario, el truco no funcionará.
+                                <br></br>3. Una vez dentro del castillo embrujado, avanza una distancia considerable.
+                                <br></br>4. Da la vuelta y regresa a toda velocidad, cuando estás por llegar al inicio, pulsa el botón para volar.
+                                <br></br>5. Notarás que en la parte superior de la casa fantasma hay un hueco en el techo. Trata de ingresar por ese lugar.
+                                <br></br>6. Cuando te encuentres en la parte superior, simplemente avanza a toda velocidad, pero debes tener cuidado, ya que muchos fantasmas se pondrán en tu camino.
+                                <br></br>7. El camino se terminará y verás un vacío. No tengas miedo y salta.
+                                <br></br>8. Habrá una puerta que te permitirá completar el nivel. Ingresa y habrás abandonado el castillo embrujado.
+                                <br></br>9. Se abrirá un pequeño camino que lleva a un nivel desconocido. Ingresa a este nuevo mundo.
+                                <br></br>10. Verás cinco ladrillos que te darán una capa, la flor, un hongo, al dinosaurio Yoshi y una vida.
+                                <br></br>11. Cuando hayas recibido todos los premios, abandona el mundo. Luego vuelve a entrar y repite hasta que tengas una buena cantidad de vidas.</p>
+                              <p class="card-text" style='color: black'><small class="text-muted">Rednarf Sajor - 20/7/2023</small></p>
+                              
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    <div>
+            
+            
+        </section>
+
+        <footer th:replace="~{layout/plantilla :: footer}"/>          
+    </body>
+</html>

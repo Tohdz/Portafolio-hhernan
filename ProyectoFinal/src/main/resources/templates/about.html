@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+    <head th:replace="~{layout/plantilla :: head}">
+        <title>FideGames</title>        
+    </head>
+    <body>
+        <header th:replace="~{layout/plantilla :: header}"/>
+        <section>
+            <div class="overlay">
+                <div class="content">
+                    <h1 class="bg-warning">[[#{frag.nos}]]</h1>
+                    <p>¡Bienvenidos a la sección "Nosotros" de nuestra página web!</p>
+                    <p>Somos un grupo apasionado de estudiantes de la Universidad Fidelitas, enfocados en la carrera de Ingeniería en Sistemas. Nos encontramos inmersos en el fascinante mundo de la materia de Diseño Web, donde exploramos y creamos experiencias digitales cautivadoras.</p>
+                    <p>Nuestra misión es fusionar la teoría y la práctica, aplicando los conocimientos adquiridos en nuestras clases para crear soluciones web innovadoras y funcionales. En cada proyecto, buscamos superar los desafíos con creatividad y habilidades técnicas, siempre con el objetivo de ofrecer experiencias únicas a quienes visitan nuestras creaciones en línea.</p>
+                    <p>La diversidad de talentos dentro de nuestro equipo nos permite abordar cada proyecto desde múltiples perspectivas, garantizando un enfoque integral y completo en el diseño y desarrollo web. Desde la conceptualización hasta la implementación, nos esforzamos por alcanzar estándares de calidad excepcionales.</p>
+                    <p>Nos enorgullece ser parte de la comunidad académica de la Universidad Fidelitas, donde cultivamos nuestro amor por la ingeniería y la tecnología. Además, nuestro compromiso con la excelencia nos impulsa a estar siempre actualizados con las últimas tendencias y mejores prácticas en diseño web.</p>
+                    <div><button type="button" class="btn btn-warning" onclick="window.location.href='/contacto/contact'">[[#{frag.con}]]</button></div>
+                </div>
+            </div>
+        </section>
+        <footer th:replace="~{layout/plantilla :: footer}"/>          
+    </body>
+</html> 

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+    <head th:replace="~{layout/plantilla :: head}">
+        <title>FideGames</title>        
+    </head>
+    <body>
+        <header th:replace="~{layout/plantilla :: header}"/>
+        <section id="play-section" class="main-section">
+            
+            <div id='current-game'>
+                <div class="header-title">
+                    <div id="options">
+                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modgame">[[#{accion.actualizar}]]</button>
+                        <button class="btn btn-danger" onclick="deleteGame()">[[#{accion.eliminar}]]</button>
+                    </div>
+                    <h1>[[${game.name}]]</h1>
+                    <h2>[[${game.emulator}]] | [[${game.year}]]</h2>
+                </div>
+                <div id="game-details">
+                    <div id='game'></div>
+                    <div id='information'>
+                        <img th:src="'/images/games/' + ${game.id}" />
+                        <p>[[${game.description}]]</p>
+                        <button id="like-button" class="btn btn-outline-primary"><span class="fas fa-heart"></span><span>Like</span></button>
+                    </div>
+                </div>
+            </div>
+            
+        </section>
+        
+        <section>
+            <div id="modgame" 
+                 class="modal fade" 
+                 tabindex="-1" 
+                 aria-labelledby="exampleModalLabel" 
+                 aria-hidden="true">
+                <div class="modal-dialog modal-md">
+                    <div class="modal-content">
+                        <div class="modal-header bg-info text-white">
+                            <h5 class="modal-title">[[#{juego.modificar}]]</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div> 
+                        <form th:action="@{/games/} + ${game.id} + @{/modificar}" th:object="${Game}"
+                              method="POST" class="was-validated" enctype="multipart/form-data">
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="titulo">[[#{juego.titulo}]]</label>
+                                    <input type="text" class="form-control" name="titulo" required="true" th:value="${game.name}"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="anno">[[#{juego.anno}]]</label>
+                                    <input type="number" class="form-control" name="anno" required="true" th:value="${game.year}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="descripcion">[[#{juego.descripcion}]]</label>
+                                    <textarea class="form-control" name="descripcion" rows="3" required="true">[[${game.description}]]</textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="imagen">[[#{juego.rutaImagen}]]</label>
+                                    <input class="form-control" type="file" name="imagen" onchange="readURL(this);"/>
+                                    <img id="blah" th:src="'/images/games/' + ${game.id}" height="200"/>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-primary" type="submit">Enviar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <script>
+            EJS_player = "#game";
+            EJS_core = "[[${game.emulator}]]";
+            EJS_gameName = "[[${game.name}]]";
+            EJS_biosUrl = "[[${game.bios}]]";
+            if (EJS_biosUrl) EJS_biosUrl = "/bios/" + EJS_biosUrl;
+            EJS_color = "#0064ff";
+            EJS_startOnLoaded = true;
+            EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
+            EJS_gameUrl = "/roms/[[${game.emulator}]]/[[${game.id}]].[[${game.extension}]]";
+        </script>
+        <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
+        <script>
+            function deleteGame() {
+                if (confirm("[[#{juego.eliminar.confirmar}]]")) {
+                    window.location.href = "/games/[[${game.id}]]/eliminar"
+                }
+            }
+        </script>
+        <footer th:replace="~{layout/plantilla :: footer}"/>          
+    </body>
+</html> 

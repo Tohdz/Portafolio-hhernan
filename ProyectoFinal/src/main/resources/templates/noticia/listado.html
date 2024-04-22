@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+    <head th:replace="~{layout/plantilla :: head}">
+        <title>FideGames</title>        
+    </head>
+    <body>
+        <header th:replace="~{layout/plantilla :: header}"/>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">   
+                    <div class="dropdown">
+                        <a class="btn btn-primary" href="/noticia/newslist" role="button">[[#{accion.regresar}]]</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <section th:replace="~{noticia/helper :: listadoNoticias}"/>
+        <footer th:replace="~{layout/plantilla :: footer}"/>          
+    </body>
+</html>

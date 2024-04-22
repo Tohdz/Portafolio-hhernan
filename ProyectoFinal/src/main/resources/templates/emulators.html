@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml">
+    <head th:replace="~{layout/plantilla :: head}">
+        <title>Fidegames</title>        
+    </head>
+    <body>
+        <header th:replace="~{layout/plantilla :: header}"/>
+        <section>
+            <div>
+                <div class="content-container">
+                    <h1 class="bg-warning">[[#{frag.emu}]]</h1>
+                </div>
+                </div>
+            <div class="h-100 d-flex align-items-center justify-content-center">
+                         <div class="card mb-3" style="max-width: 1080px; " >
+                        
+                            <div class="row g-0">
+                          <div class="col-md-4">
+                              <img th:src="'/images/emulators/1.jpg'" class="img-fluid rounded-start" alt="..."></img>
+                          </div>
+                          <div class="col-md-8">
+                            <div class="card-body">
+                              <h2 class="card-title" style='color: black'>PPSSPP</h2>
+                              <p class="card-text" style='color: black'>Emulador de la consola PSP (Play Station Portable).
+                                  <br></br>Disponible tanto para Windows, Android, iOS, Linux y MacOS</p>
+                              <a type="button" class="btn btn-warning" href="https://www.ppsspp.org/download/">Descarga</a>
+                              
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    <div>
+            
+            
+        </section>
+
+        <footer th:replace="~{layout/plantilla :: footer}"/>          
+    </body>
+</html>

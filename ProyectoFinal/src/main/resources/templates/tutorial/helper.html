@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+    <head th:replace="~{layout/plantilla :: head}">
+        <title>Fidegames</title>
+    </head>
+    <body>
+        <!-- 3 Sección de dropdown para crud de tutoriales -->
+        <section th:fragment="AgregarTutorial" sec:authorize="hasRole('ROLE_ADMIN')" >
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3">   
+                        <div class="dropdown">
+                            <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                [[#{tutorial.admin}]]
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#agregatuto">[[#{tutorial.agregar}]]</a></li>
+                                <li><a class="dropdown-item" href="/tutorial/listado">[[#{tutorial.mod}]]</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3 Sección de ventana modal para agregar tutoriales -->
+        <section th:fragment="ventanaTutorial">
+            <div id="agregatuto" 
+                 class="modal fade" 
+                 tabindex="-1" 
+                 aria-labelledby="exampleModalLabel" 
+                 aria-hidden="true">
+                <div class="modal-dialog modal-md">
+                    <div class="modal-content">
+                        <div class="modal-header bg-info text-white">
+                            <h5 class="modal-title">[[#{tutorial.ventana}]]</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div> 
+                        <form th:action="@{/tutorial/guardar}" th:object="${Tutorial}"
+                              method="POST" class="was-validated" enctype="multipart/form-data">
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="titulo">[[#{tutorial.titulo}]]</label>
+                                    <input type="text" class="form-control" name="titulo" required="true"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="titulo">[[#{tutorial.cuerpo}]]</label>
+                                    <textarea class="form-control" name="cuerpo" rows="3" required="true" ></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="imagen">[[#{tutorial.rutaImagen}]]</label>
+                                    <input class="form-control" type="file" name="imagen" onchange="readURL(this);"/>
+                                    <img id="blah" src="#" height="200"/>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-primary" type="submit">[[#{tutorial.boton}]]</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3 Sección principal para mostrar tutoriales -->
+        <section th:fragment="listadoTutorial" id="tutoriales">
+            <div th:each="tutorial : ${tutoriales}" class="noticia-container">
+                <h2 th:text="${tutorial.titulo}" class="titulo"></h2>
+                <!-- Uso del operador ternario para determinar el th:src -->
+                <img th:src="${tutorial.imagen.startsWith('/') ? '@{' + tutorial.imagen + '}' : tutorial.imagen.startsWith('http') ? tutorial.imagen : '/' + tutorial.imagen}" class="imagen" />
+                <p th:text="${tutorial.cuerpo}" class="cuerpo"></p>
+            </div>
+        </section>
+
+        <!-- 4 Fragmento que se utiliza el boton update o actualizar -->
+        <section th:fragment="editarTutorial">
+            <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <form method="POST"
+                          th:action="@{/tutorial/guardar2/}+${tutorial.id}" 
+                          th:object="${tutorial}"
+                          class="was-validated"                          
+                          enctype="multipart/form-data">
+                        <input type="hidden" name="id" th:field="*{id}"/>
+                        <input type="hidden" name="imagen" th:field="*{imagen}"/>
+                        <section th:replace="~{tutorial/helper :: botonesEditar}"/>
+                        <div id=details>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h4>[[#{accion.actualizar}]]</h4>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="mb-3">
+                                                    <label for="titulo">[[#{tutorial.titulo}]]</label>
+                                                    <input type="text" class="form-control" name="titulo" th:field="*{titulo}"required="true">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="cuerpo">[[#{tutorial.cuerpo}]]</label>
+                                                    <textarea class="form-control" name="Cuerpo" rows="3" th:field="*{cuerpo}" required="true" ></textarea>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="imagen">[[#{tutorial.rutaImagen}]]</label>
+                                                    <input class="form-control" type="file" name="imagen"  onchange="readURL(this);" required="true"/>
+                                                    <img id="blah" th:src="@{${tutorial.imagen}}" alt="An image needs to be upload" th:field="*{imagen}" height="200"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 3 Sección para mostrar tutoriales modo admin -->
+        <section th:fragment="listadoTutoriales" id="tuto">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-9">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4>[[#{frag.tuto}]]</h4>
+                            </div>
+                            <div th:if="${tutoriales != null and !tutoriales.empty}">
+                                <table class="table table-striped table-hover">
+                                    <thead class="table-dark">
+                                        <tr><th>#</th>
+                                            <th>[[#{tuto.imagen}]]</th>
+                                            <th>[[#{tuto.titulo}]]</th>
+                                            <th>[[#{tuto.cuerpo}]]</th>
+                                            <th></th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="tutorial, contador : ${tutoriales}">
+                                            <td>[[${contador.count}]]</td>
+                                            <td>[[${tutorial.imagen}]]</td>
+                                            <td>[[${tutorial.titulo}]]</td>
+                                            <td>[[${tutorial.cuerpo}]]</td>
+                                            <td><a th:href="@{/tutorial/eliminar/}+${tutorial.id}"class="btn btn-danger"> <i class="fas fa-trash"></i> [[#{accion.eliminar}]]</a>
+                                                <a th:href="@{/tutorial/modificar/}+${tutorial.id}"class="btn btn-success"><i class="fas fa-pencil"></i> [[#{accion.actualizar}]]</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="text-center p-2" th:if="${toturiales == null or tutoriales.empty}">
+                                <span>[[#{lista.vacia}]]</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 5 Fragmento que se utiliza en el html del boton upgrade o modificar -->
+        <section th:fragment="botonesEditar">
+            <div class="container py-4 mb-4 bg-light">
+                <div class="row">
+                    <div class="col-md-4 d-grid">
+                        <a th:href="@{/tutorial/listado}" class="btn btn-primary">
+                            <i class="fas fa-arrow-left"></i> [[#{accion.regresar}]]
+                        </a>
+                    </div>
+                    <div class="col-md-4 d-grid">                                
+                        <a th:href="@{/tutorial/eliminar/}+${tutorial.id}"
+                           class="btn btn-danger">
+                            <i class="fas fa-trash"></i> [[#{accion.eliminar}]]
+                        </a>
+                    </div>
+                    <div class="col-md-4 d-grid">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-check"></i> [[#{accion.guardar}]]
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </body>
+</html>

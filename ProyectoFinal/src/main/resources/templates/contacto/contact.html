@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+    <head th:replace="~{layout/plantilla :: head}">
+        <title>FideGames</title>        
+    </head>
+    <body>
+        <header th:replace="~{layout/plantilla :: header}"/>
+        <section th:replace="~{contacto/helper :: EliminarContacto}"/>
+        <section>
+            <div class="container">
+                <form th:action="@{/contacto/guardar}" th:object="${Contacto}" method="POST" class="col-md-6 mx-auto">
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label text-warning fw-bold">[[#{con.nom}]]</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" required="true">
+                    </div>
+                    <div class="mb-3">
+                        <label for="correo" class="form-label text-warning fw-bold">[[#{con.corr}]]</label>
+                        <input type="email" class="form-control" id="correo" name="correo" required="true">
+                    </div>
+                    <div class="mb-3">
+                        <label for="mensaje" class="form-label text-warning fw-bold">[[#{con.mes}]]</label>
+                        <textarea class="form-control" id="mensaje" name="mensaje" rows="3" required="true"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-warning">[[#{con.env}]]</button>
+                </form>
+            </div>
+        </section>
+
+        <footer th:replace="~{layout/plantilla :: footer}"/>          
+    </body>
+</html> 

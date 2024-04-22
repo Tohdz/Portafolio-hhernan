@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+    <head th:replace="~{layout/plantilla :: head}">
+        <title>FideGames</title>        
+    </head>
+    <body>
+        <header th:replace="~{layout/plantilla :: header}"/>
+        <section class="main-section">
+            <div class='header-title'>
+                <h1 class="bg-warning">[[#{juego.juegos}]]</h1>
+                <div id="options">
+                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addgame" sec:authorize="hasRole('ROLE_ADMIN')" >[[#{accion.agregar}]]</button>
+                </div>
+            </div>
+            <div th:if="${games != null and !games.empty}">
+                <div id="gamesContainer">
+                    <a class="game-small" th:each="game, contador : ${games}" th:href="'games/' + ${game.id}">
+                        <img th:src="'/images/games/' + ${game.id}" />
+                        <div id="info">
+                            <h2>[[${game.name}]]</h2>
+                            <h3>[[${game.emulator}]] | [[${game.year}]]</h3>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+        
+        <section>
+            <div id="addgame" 
+                 class="modal fade" 
+                 tabindex="-1" 
+                 aria-labelledby="exampleModalLabel" 
+                 aria-hidden="true">
+                <div class="modal-dialog modal-md">
+                    <div class="modal-content">
+                        <div class="modal-header bg-info text-white">
+                            <h5 class="modal-title">[[#{juego.agregar}]]</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div> 
+                        <form th:action="@{/games/agregar}" th:object="${Game}"
+                              method="POST" class="was-validated" enctype="multipart/form-data">
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="titulo">[[#{juego.titulo}]]</label>
+                                    <input type="text" class="form-control" name="titulo" required="true"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="anno">[[#{juego.anno}]]</label>
+                                    <input type="number" class="form-control" name="anno" required="true"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="descripcion">[[#{juego.descripcion}]]</label>
+                                    <textarea class="form-control" name="descripcion" rows="3" required="true"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="emulador">[[#{juego.emulador}]]</label>
+                                    <select name="emulador" class="form-control" required="true">
+                                        <option value="atari2600">Atari 2600</option>
+                                        <option value="c64">Commodore 64</option>
+                                        <option value="nes">NES / Famicom</option>
+                                        <option value="snes">SNES / Super Famicom</option>
+                                        <option value="gb">Gameboy</option>
+                                        <option value="n64">Nintendo 64</option>
+                                        <option value="gba">Gameboy Advance</option>
+                                        <option value="ds">Nintendo DS</option>
+                                        <option value="segaMD">Sega Genesis</option>
+                                        <option value="psx-J">Playstation JP</option>
+                                        <option value="psx-E">Playstation EU</option>
+                                        <option value="psx-A">Playstation AM</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="imagen">[[#{juego.rutaImagen}]]</label>
+                                    <input class="form-control" type="file" name="imagen" onchange="readURL(this);" required="true"/>
+                                    <img id="blah" src="#" height="200"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="rom">[[#{juego.rom}]]</label>
+                                    <input class="form-control" type="file" name="rom" required="true"/>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-primary" type="submit">Enviar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <footer th:replace="~{layout/plantilla :: footer}"/>          
+    </body>
+</html> 

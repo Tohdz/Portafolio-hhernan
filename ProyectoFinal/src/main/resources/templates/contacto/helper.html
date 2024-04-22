@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+    <head th:replace="~{layout/plantilla :: head}">
+        <title>TechShop</title>
+    </head>
+    <body>
+        <!-- 3 Sección de dropdown para crud de contacto -->
+        <section th:fragment="EliminarContacto" sec:authorize="hasRole('ROLE_ADMIN')" >
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3">   
+                        <div class="dropdown">
+                            <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                [[#{contacto.admin}]]
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="/contacto/list">[[#{contacto.mod}]]</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 3 Sección para mostrar noticias modo admin -->
+        <section th:fragment="listadoContacto" id="cont">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-9">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4>[[#{frag.cont}]]</h4>
+                            </div>
+                            <div th:if="${Contactos != null and !Contactos.empty}">
+                                <table class="table table-striped table-hover">
+                                    <thead class="table-dark">
+                                        <tr><th>#</th>
+                                            <th>[[#{contacto.nombre}]]</th>
+                                            <th>[[#{contacto.correo}]]</th>
+                                            <th>[[#{contacto.mensaje}]]</th>
+                                            <th></th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="Contacto, contador : ${Contactos}">
+                                            <td>[[${contador.count}]]</td>
+                                            <td>[[${Contacto.nombre}]]</td>
+                                            <td>[[${Contacto.correo}]]</td>
+                                            <td>[[${Contacto.mensaje}]]</td>
+                                            <td><a th:href="@{/contacto/eliminar/}+${Contacto.id}"class="btn btn-danger"> <i class="fas fa-trash"></i> [[#{accion.eliminar}]]</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="text-center p-2" th:if="${Contactos == null or Contactos.empty}">
+                                <span>[[#{lista.vacia}]]</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </body>
+</html>

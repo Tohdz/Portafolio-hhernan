@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+    <head th:replace="~{layout/plantilla :: head}">
+        <title>TechShop</title>
+    </head>
+    <body>
+        <!-- 3 Sección de dropdown para crud de noticias -->
+        <section th:fragment="AgregarNoticia" sec:authorize="hasRole('ROLE_ADMIN')" >
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3">   
+                        <div class="dropdown">
+                            <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                [[#{noticia.admin}]]
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#agreganoti">[[#{noticia.agregar}]]</a></li>
+                                <li><a class="dropdown-item" href="/noticia/listado">[[#{noticia.mod}]]</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3 Sección de ventana modal para agregar noticias -->
+        <section th:fragment="ventanaNoticia">
+            <div id="agreganoti" 
+                 class="modal fade" 
+                 tabindex="-1" 
+                 aria-labelledby="exampleModalLabel" 
+                 aria-hidden="true">
+                <div class="modal-dialog modal-md">
+                    <div class="modal-content">
+                        <div class="modal-header bg-info text-white">
+                            <h5 class="modal-title">[[#{noticia.ventana}]]</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div> 
+                        <form th:action="@{/noticia/guardar}" th:object="${Noticia}"
+                              method="POST" class="was-validated" enctype="multipart/form-data">
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="titulo">[[#{noticia.titulo}]]</label>
+                                    <input type="text" class="form-control" name="titulo" required="true"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="titulo">[[#{noticia.cuerpo}]]</label>
+                                    <textarea class="form-control" name="cuerpo" rows="3" required="true" ></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="imagen">[[#{noticia.rutaImagen}]]</label>
+                                    <input class="form-control" type="file" name="imagen" onchange="readURL(this);"/>
+                                    <img id="blah" src="#" height="200"/>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-primary" type="submit">[[#{noticia.boton}]]</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3 Sección principal para mostrar noticias -->
+        <section th:fragment="listadoNoticia" id="noticias">
+            <div th:each="noticia : ${Noticias}" class="noticia-container">
+                <h2 th:text="${noticia.titulo}" class="titulo"></h2>
+                <!-- Uso del operador ternario para determinar el th:src -->
+                <img th:src="${noticia.imagen.startsWith('/') ? '@{' + noticia.imagen + '}' : noticia.imagen.startsWith('http') ? noticia.imagen : '/' + noticia.imagen}" class="imagen" />
+                <p th:text="${noticia.cuerpo}" class="cuerpo"></p>
+            </div>
+        </section>
+
+        <!-- 4 Fragmento que se utiliza el boton update o actualizar -->
+        <section th:fragment="editarNoticia">
+            <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <form method="POST"
+                          th:action="@{/noticia/guardar2/}+${noticia.id}"
+                          th:object="${Noticia}"
+                          class="was-validated"                          
+                          enctype="multipart/form-data">
+                        <input type="hidden" name="id" th:field="*{id}"/>
+                        <input type="hidden" name="imagen" th:field="*{imagen}"/>
+                        <section th:replace="~{noticia/helper :: botonesEditar}"/>
+                        <div id=details>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h4>[[#{accion.actualizar}]]</h4>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="mb-3">
+                                                    <label for="titulo">[[#{noticia.titulo}]]</label>
+                                                    <input type="text" class="form-control" name="titulo" th:field="*{titulo}" required="true">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="cuerpo">[[#{noticia.cuerpo}]]</label>
+                                                    <textarea class="form-control" name="cuerpo" rows="3" th:field="*{cuerpo}" required="true" ></textarea>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="imagen">[[#{noticia.rutaImagen}]]</label>
+                                                    <input class="form-control" type="file" name="imagen" onchange="readURL(this);" required="true"/>
+                                                    <img id="blah" th:src="@{${Noticia.imagen}}" alt="An image needs to be upload" th:field="*{imagen}" height="200"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 3 Sección para mostrar noticias modo admin -->
+        <section th:fragment="listadoNoticias" id="noti">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-9">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4>[[#{frag.noti}]]</h4>
+                            </div>
+                            <div th:if="${Noticias != null and !Noticias.empty}">
+                                <table class="table table-striped table-hover">
+                                    <thead class="table-dark">
+                                        <tr><th>#</th>
+                                            <th>[[#{noti.imagen}]]</th>
+                                            <th>[[#{noti.titulo}]]</th>
+                                            <th>[[#{noti.cuerpo}]]</th>
+                                            <th></th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="Noticia, contador : ${Noticias}">
+                                            <td>[[${contador.count}]]</td>
+                                            <td>[[${Noticia.imagen}]]</td>
+                                            <td>[[${Noticia.titulo}]]</td>
+                                            <td>[[${Noticia.cuerpo}]]</td>
+                                            <td><a th:href="@{/noticia/eliminar/}+${Noticia.id}"class="btn btn-danger"> <i class="fas fa-trash"></i> [[#{accion.eliminar}]]</a>
+                                                <a th:href="@{/noticia/modificar/}+${Noticia.id}"class="btn btn-success"><i class="fas fa-pencil"></i> [[#{accion.actualizar}]]</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="text-center p-2" th:if="${Noticias == null or Noticias.empty}">
+                                <span>[[#{lista.vacia}]]</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 5 Fragmento que se utiliza en el html del boton upgrade o modificar -->
+        <section th:fragment="botonesEditar">
+            <div class="container py-4 mb-4 bg-light">
+                <div class="row">
+                    <div class="col-md-4 d-grid">
+                        <a th:href="@{/noticia/listado}" class="btn btn-primary">
+                            <i class="fas fa-arrow-left"></i> [[#{accion.regresar}]]
+                        </a>
+                    </div>
+                    <div class="col-md-4 d-grid">                                
+                        <a th:href="@{/noticia/eliminar/}+${Noticia.id}"
+                           class="btn btn-danger">
+                            <i class="fas fa-trash"></i> [[#{accion.eliminar}]]
+                        </a>
+                    </div>
+                    <div class="col-md-4 d-grid">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-check"></i> [[#{accion.guardar}]]
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </body>
+</html>

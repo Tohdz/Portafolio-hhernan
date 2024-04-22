@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+    <head th:replace="~{layout/plantilla :: head}">
+        <title>Fidegames</title>
+    </head>
+    <body>
+        <!-- 3 Sección de dropdown para crud de emuladors -->
+        <section th:fragment="AgregarEmulador" sec:authorize="hasRole('ROLE_ADMIN')" >
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3">   
+                        <div class="dropdown">
+                            <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                [[#{emulador.admin}]]
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#agregaemu">[[#{emulador.agregar}]]</a></li>
+                                <li><a class="dropdown-item" href="/emulador/listado">[[#{emulador.mod}]]</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3 Sección de ventana modal para agregar emuladors -->
+        <section th:fragment="ventanaEmulador">
+            <div id="agregaemu" 
+                 class="modal fade" 
+                 tabindex="-1" 
+                 aria-labelledby="exampleModalLabel" 
+                 aria-hidden="true">
+                <div class="modal-dialog modal-md">
+                    <div class="modal-content">
+                        <div class="modal-header bg-info text-white">
+                            <h5 class="modal-title">[[#{emulador.ventana}]]</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div> 
+                        <form th:action="@{/emulador/guardar}" th:object="${Emulador}"
+                              method="POST" class="was-validated" enctype="multipart/form-data">
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="nombre">[[#{emulador.nombre}]]</label>
+                                    <input type="text" class="form-control" name="nombre" required="true"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="consola">[[#{emulador.consola}]]</label>
+                                    <input type="text" class="form-control" name="consola" required="true"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="year">[[#{emulador.year}]]</label>
+                                    <input type="text" class="form-control" name="year" required="true"/>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="descripcion">[[#{emulador.descripcion}]]</label>
+                                    <textarea class="form-control" name="descripcion" rows="3" required="true" ></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="descarga">[[#{emulador.descarga}]]</label>
+                                    <input type="text" class="form-control" name="descarga" required="true"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="imagen">[[#{emulador.imagen}]]</label>
+                                    <input type="text" class="form-control" name="imagen" required="true"/>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-primary" type="submit">[[#{emulador.boton}]]</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3 Sección principal para mostrar emuladors -->
+        <section th:fragment="listadoEmulador" id="emuladors">
+            <div th:each="emulador : ${Emuladores}" class="emulador-container">
+                <div class="h-100 d-flex align-items-center justify-content-center">
+                         <div class="card mb-3" style="max-width: 1080px; " >
+                        
+                            <div class="row g-0">
+                          <div class="col-md-4">
+                              <img th:src="${emulador.imagen.startsWith('/') ? '@{' + emulador.imagen + '}' : emulador.imagen.startsWith('http') ? emulador.imagen : '/' + emulador.imagen}" class="img-fluid rounded-start" alt="..."></img>
+                          </div>
+                          <div class="col-md-8">
+                            <div class="card-body">
+                                <h2 class="card-title" style='color: black'>[[${emulador.nombre}]]<br></br>[[${emulador.consola}]]<br></br>[[${emulador.year}]]</h2>
+                              <p class="card-text" style='color: black'>[[${emulador.descripcion}]]</p>
+                              <a type="button" class="btn btn-warning" th:href=${emulador.descarga} sec:authorize="hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')">[[#{emulador.descargar}]]</a>
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>
+        </section>
+
+        <!-- 4 Fragmento que se utiliza el boton update o actualizar -->
+        <section th:fragment="editarEmulador">
+            <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <form method="POST"
+                          
+                          th:object="${Emulador}"
+                          th:action="@{/emulador/guardar/}+${Emulador.id}" 
+                          class="was-validated"                          
+                          enctype="multipart/form-data">
+                        <input type="hidden" name="id" th:field="*{id}"/>
+                        
+                        <section th:replace="~{emulador/helper :: botonesEditar}"/>
+                        <div id=details>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h4>[[#{accion.actualizar}]]</h4>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="mb-3">
+                                                    <label for="nombre">[[#{emulador.nombre}]]</label>
+                                                    <input type="text" class="form-control" name="nombre" th:field="*{nombre}"required="true">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="consola">[[#{emulador.consola}]]</label>
+                                                    <input type="text" class="form-control" name="consola" th:field="*{consola}"required="true">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="year">[[#{emulador.year}]]</label>
+                                                    <input type="text" class="form-control" name="year" th:field="*{year}"required="true">
+                                                </div>
+                                                
+                                                <div class="mb-3">
+                                                    <label for="titulo">[[#{emulador.descripcion}]]</label>
+                                                    <textarea class="form-control" name="descripcion" rows="3" th:field="*{descripcion}" required="true" ></textarea>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="descarga">[[#{emulador.descarga}]]</label>
+                                                    <input type="text" class="form-control" name="descarga" th:field="*{descarga}"required="true">
+                                                </div>
+                                                
+                                               <div class="mb-3">
+                                                    <label for="imagen">[[#{emulador.consola}]]</label>
+                                                    <input type="text" class="form-control" name="imagen" th:field="*{imagen}"required="true"/>
+                                                </div>
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 3 Sección para mostrar emuladors modo admin -->
+        <section th:fragment="listadoEmuladores" id="emu">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-9">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4>[[#{frag.emu}]]</h4>
+                            </div>
+                            <div th:if="${Emuladores != null and !Emuladores.empty}">
+                                <table class="table table-striped table-hover">
+                                    <thead class="table-dark">
+                                        <tr><th>#</th>
+                                            
+                                            <th>[[#{emulador.nombre}]]</th>
+                                            <th>[[#{emulador.consola}]]</th>
+                                            <th>[[#{emulador.year}]]</th>
+                                            <th>[[#{emulador.descripcion}]]</th>
+                                            <th>[[#{emulador.descarga}]]</th>
+                                            <th></th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="Emulador: ${Emuladores}">
+                                            <td>[[${Emulador.id}]]</td>
+                                            
+                                            <td>[[${Emulador.nombre}]]</td>
+                                            <td>[[${Emulador.consola}]]</td>
+                                            <td>[[${Emulador.year}]]</td>
+                                            <td>[[${Emulador.descripcion}]]</td>
+                                            <td>[[${Emulador.descarga}]]</td>
+                                            <td><a th:href="@{/emulador/eliminar/}+${Emulador.id}"class="btn btn-danger"> <i class="fas fa-trash"></i> [[#{accion.eliminar}]]</a>
+                                                <a th:href="@{/emulador/modificar/}+${Emulador.id}"class="btn btn-success"><i class="fas fa-pencil"></i> [[#{accion.actualizar}]]</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="text-center p-2" th:if="${Emuladors == null or Emuladors.empty}">
+                                <span>[[#{lista.vacia}]]</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 5 Fragmento que se utiliza en el html del boton upgrade o modificar -->
+        <section th:fragment="botonesEditar">
+            <div class="container py-4 mb-4 bg-light">
+                <div class="row">
+                    <div class="col-md-4 d-grid">
+                        <a th:href="@{/emulador/listado}" class="btn btn-primary">
+                            <i class="fas fa-arrow-left"></i> [[#{accion.regresar}]]
+                        </a>
+                    </div>
+                    <div class="col-md-4 d-grid">                                
+                        <a th:href="@{/emulador/eliminar/}+${Emulador.id}"
+                           class="btn btn-danger">
+                            <i class="fas fa-trash"></i> [[#{accion.eliminar}]]
+                        </a>
+                    </div>
+                    <div class="col-md-4 d-grid">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-check"></i> [[#{accion.guardar}]]
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </body>
+</html>
